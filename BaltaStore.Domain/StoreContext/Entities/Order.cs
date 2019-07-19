@@ -1,20 +1,20 @@
 using BaltaStore.Domain.StoreContext.Enums;
+using FluentValidator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace BaltaStore.Domain.StoreContext.Entities
 {
-    public class Order
+    public class Order : Notifiable
     {
 
         private readonly IList<OrderItem> _items;
         private readonly IList<Delivery> _deliveries;
 
-        public Order(Custumer custumer, string number)
+        public Order(Custumer custumer)
         {
             Custumer = custumer;
-            Number = Guid.NewGuid().ToString().Replace("-", "").Substring(0,8).ToUpper();
             CreateDate = DateTime.Now;
             Status = EOrderStatus.Created;
             _items = new List<OrderItem>();
@@ -31,19 +31,27 @@ namespace BaltaStore.Domain.StoreContext.Entities
         public void AddItem(OrderItem item)
         {
             //Valida Item
+            if(item.Quantity)
             //Adiciona Item no pedido
             _items.Add(item);
         }
 
-        
+
         //Criar um pedid0 
-        public void Place(){}
+        public void Place()
+        {
+            Number = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 8).ToUpper();
+            if(_items.Count == 0)
+            {
+                AddNotification("Order", "Esse pedido não contem produtos");
+            }
+        }
 
         //pagar um pedido
         public void Pay()
         {
             Status = EOrderStatus.Paid;
-           
+
         }
         //Enviar um pedido
 
@@ -55,7 +63,7 @@ namespace BaltaStore.Domain.StoreContext.Entities
 
             foreach (var item in _items)
             {
-                if(count == 5)
+                if (count == 5)
                 {
                     count = 0;
                     deliveries.Add(new Delivery(DateTime.Now.AddDays(5)));

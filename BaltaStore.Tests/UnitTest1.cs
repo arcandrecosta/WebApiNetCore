@@ -1,4 +1,5 @@
 using BaltaStore.Domain.StoreContext.Entities;
+using BaltaStore.Domain.StoreContext.ValuesObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BaltaStore.Tests
@@ -9,7 +10,11 @@ namespace BaltaStore.Tests
         [TestMethod]
         public void TestMethod1()
         {
-            var c = new Custumer(firstName: "André", lastName: "Costa", document: "12345678", email: "andre.costa@email.com", phone: "119989878", address: "Rua dadisney");
+            Name name = new Name(firstName: "André", lastName: "Costa");
+            Document document = new Document("12345678");
+            Email email = new Email( "andre.costa@email.com");
+            
+            var c = new Custumer(name:name, document: document, email:email, phone: "119989878", address: "Rua dadisney");
 
            
         }
